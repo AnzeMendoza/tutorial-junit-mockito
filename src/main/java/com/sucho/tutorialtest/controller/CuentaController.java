@@ -9,17 +9,28 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/cuentas")
+@RequestMapping(value = "/api/cuentas")
 public class CuentaController {
     @Autowired
     private CuentaService cuentaService;
 
+    @GetMapping("/")
+    public List<Cuenta> listarCuentas(){
+        return cuentaService.findAll();
+    }
+
     @GetMapping("/{id}")
     public Cuenta verDetaller(@PathVariable long id){
         return cuentaService.findById(id);
+    }
+
+    @PostMapping("/")
+    public Cuenta guardarCuenta(@RequestBody Cuenta cuenta){
+        return cuentaService.save(cuenta);
     }
 
     @PostMapping("/transferir")
@@ -33,7 +44,7 @@ public class CuentaController {
         respuesta.put("date", LocalDate.now().toString());
         respuesta.put("status", "ok");
         respuesta.put("mensaje", "Transferencia realizada con exito");
-        respuesta.put("transaccion", transaccionDTO);
+        respuesta.put("transaccionDTO", transaccionDTO);
 
         return ResponseEntity.ok(respuesta);
     }
